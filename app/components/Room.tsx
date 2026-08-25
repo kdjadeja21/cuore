@@ -132,8 +132,17 @@ export default function Room() {
           quality={72}
           className="object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-transparent to-ink/50" />
       </div>
+
+      {/* The scrim is deliberately not inside the plane above: that plane pans
+          and moves in depth, which would drag the darkening away from the copy
+          it exists to make readable. Anchored to the section instead, and
+          weighted well above the bottom edge, because the brightest part of
+          the photograph sits directly behind the heading. */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-gradient-to-t from-ink via-ink/70 to-ink/45"
+      />
 
       <div
         className="room-plane-glow absolute inset-0 will-change-transform"

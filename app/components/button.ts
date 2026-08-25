@@ -10,8 +10,11 @@ const BASE =
  */
 export function buttonClass(variant: ButtonVariant, extra = ""): string {
   switch (variant) {
+    // Rust rather than terracotta: cream on terracotta is only 3.79:1, which
+    // is short of AA for label-sized text. Terracotta still carries the accent
+    // on display type, where the 3:1 large-text threshold applies.
     case "primary":
-      return `${BASE} bg-terracotta px-8 py-4 text-cream hover:bg-rust ${extra}`;
+      return `${BASE} bg-rust px-8 py-4 text-cream hover:bg-wine ${extra}`;
     case "secondary":
       return `${BASE} border border-ink/30 px-8 py-4 text-ink hover:bg-ink hover:text-cream ${extra}`;
     case "onDark":

@@ -23,7 +23,8 @@ export default function Visit() {
             <MaskedLines
               lines={[
                 "The table is already",
-                <span key="line-2" className="text-terracotta">
+                // Wine on sand, since terracotta on sand is only 2.85:1
+                <span key="line-2" className="text-wine">
                   set. Come and sit.
                 </span>,
               ]}
@@ -71,7 +72,8 @@ export default function Visit() {
             </p>
             <p className="leading-relaxed">
               Parties over {SITE.maxTableParty} go through the banquet team.{" "}
-              <Link href="/contact" className="link-wipe text-rust">
+              {/* Wine, not rust: this section is sand-backed */}
+              <Link href="/contact" className="link-wipe text-wine">
                 Send an enquiry
               </Link>
               .

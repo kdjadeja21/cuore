@@ -154,7 +154,8 @@ export default function ContactPage() {
         >
           {PRACTICALITIES.map((entry) => (
             <div key={entry.label} className="border-t border-ink/20 pt-5">
-              <p className="text-[0.65rem] uppercase tracking-[0.3em] text-rust">
+              {/* Wine, not rust: this band is sand, where rust drops to 4.24:1 */}
+              <p className="text-[0.65rem] uppercase tracking-[0.3em] text-wine">
                 {entry.label}
               </p>
               <p className="mt-3 max-w-md text-sm leading-relaxed text-ink-soft">

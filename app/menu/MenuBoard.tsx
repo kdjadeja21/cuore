@@ -157,15 +157,13 @@ export default function MenuBoard() {
                   onClick={() => jumpTo(section.id)}
                   aria-current={current ? "true" : undefined}
                   className={`text-left text-[0.7rem] uppercase tracking-[0.25em] transition-colors duration-200 ${
-                    current
-                      ? "text-terracotta"
-                      : "text-ink-soft hover:text-ink"
+                    current ? "text-rust" : "text-ink-soft hover:text-ink"
                   }`}
                 >
                   <span
                     aria-hidden="true"
                     className={`mr-3 inline-block h-px w-4 align-middle transition-all duration-300 ${
-                      current ? "w-8 bg-terracotta" : "bg-ink/30"
+                      current ? "w-8 bg-rust" : "bg-ink/30"
                     }`}
                   />
                   {section.name}
@@ -211,7 +209,7 @@ export default function MenuBoard() {
                 >
                   <div className="transition-transform duration-300 ease-out group-hover:translate-x-2">
                     <div className="flex items-baseline justify-between gap-6">
-                      <h3 className="font-display text-xl font-medium leading-tight tracking-tight transition-colors duration-300 group-hover:text-terracotta sm:text-2xl">
+                      <h3 className="font-display text-xl font-medium leading-tight tracking-tight transition-colors duration-300 group-hover:text-rust sm:text-2xl">
                         {item.name}
                         {item.signature ? (
                           <span className="ml-3 align-middle text-[0.6rem] uppercase tracking-[0.25em] text-rust">
@@ -231,7 +229,7 @@ export default function MenuBoard() {
 
                   <span
                     aria-hidden="true"
-                    className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-0 bg-terracotta transition-transform duration-300 ease-out group-hover:scale-x-100"
+                    className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-0 bg-rust transition-transform duration-300 ease-out group-hover:scale-x-100"
                   />
                 </li>
               ))}
