@@ -30,7 +30,7 @@ export default function PageHeader({
       mm.add(ALLOW_MOTION, () => {
         gsap.set(root.current, { visibility: "visible" });
 
-        gsap
+        const timeline = gsap
           .timeline({ defaults: { ease: EASE.enter } })
           .from(q(".page-eyebrow"), { opacity: 0, y: 12, duration: DUR.enter })
           .from(
@@ -41,12 +41,17 @@ export default function PageHeader({
               stagger: STAGGER.loose,
             },
             "-=0.45"
-          )
-          .from(
-            q(".page-lede"),
+          );
+
+        // Not every page has a lede, and GSAP warns on empty targets.
+        const ledeEl = q(".page-lede");
+        if (ledeEl.length > 0) {
+          timeline.from(
+            ledeEl,
             { opacity: 0, y: RISE, duration: DUR.enter },
             "-=0.5"
           );
+        }
       });
     },
     { scope: root }

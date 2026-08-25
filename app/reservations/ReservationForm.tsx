@@ -5,11 +5,9 @@ import Link from "next/link";
 import { gsap, useGSAP } from "@/app/components/gsap";
 import { ALLOW_MOTION, CAN_HOVER, DUR, EASE } from "@/app/components/motion";
 import { buttonClass } from "@/app/components/button";
+import { requestReservation } from "@/app/lib/actions";
 import {
   INITIAL_RESERVATION_STATE,
-  requestReservation,
-} from "@/app/lib/actions";
-import {
   OCCASIONS,
   bookingWindow,
   formatDate,
@@ -141,7 +139,10 @@ export default function ReservationForm() {
         });
       });
     },
-    { scope: root, dependencies: [state.status] }
+    // Runs once: the card element outlives the form/confirmation swap inside
+    // it, so re-binding the tilt on every state change would only stack up
+    // duplicate pointer listeners.
+    { scope: root }
   );
 
   const errors: FieldErrors = state.status === "invalid" ? state.errors : {};

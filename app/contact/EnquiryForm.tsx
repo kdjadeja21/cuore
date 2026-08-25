@@ -2,15 +2,8 @@
 
 import { useActionState } from "react";
 import { buttonClass } from "@/app/components/button";
-import { INITIAL_ENQUIRY_STATE, sendEnquiry } from "@/app/lib/actions";
-
-const SUBJECTS = [
-  "Private dining & banquets",
-  "Large party (over 10)",
-  "Press & photography",
-  "Careers",
-  "Something else",
-] as const;
+import { sendEnquiry } from "@/app/lib/actions";
+import { INITIAL_ENQUIRY_STATE, SUBJECTS } from "@/app/lib/enquiry";
 
 export default function EnquiryForm() {
   const [state, action, pending] = useActionState(

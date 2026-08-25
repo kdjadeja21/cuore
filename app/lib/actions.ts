@@ -4,20 +4,13 @@ import {
   readValues,
   reference,
   validate,
-  type FieldErrors,
-  type ReservationValues,
+  type ReservationState,
 } from "./reservation";
-
-export type ReservationState =
-  | { status: "idle" }
-  | { status: "invalid"; errors: FieldErrors; values: ReservationValues }
-  | {
-      status: "confirmed";
-      reference: string;
-      values: ReservationValues;
-    };
-
-export const INITIAL_RESERVATION_STATE: ReservationState = { status: "idle" };
+import {
+  readEnquiry,
+  validateEnquiry,
+  type EnquiryState,
+} from "./enquiry";
 
 /**
  * Validates a booking request and confirms it.
@@ -40,53 +33,28 @@ export async function requestReservation(
 
   const bookingReference = reference();
 
-  console.info("[reservation]", {
-    reference: bookingReference,
-    date: values.date,
-    time: values.time,
-    party: values.party,
-    name: values.name,
-    phone: values.phone,
-    email: values.email,
-    occasion: values.occasion,
-    notes: values.notes,
-  });
+  console.info("[reservation]", { reference: bookingReference, ...values });
 
   return { status: "confirmed", reference: bookingReference, values };
 }
 
-export type EnquiryState =
-  | { status: "idle" }
-  | { status: "invalid"; errors: Record<string, string> }
-  | { status: "sent"; name: string };
-
-export const INITIAL_ENQUIRY_STATE: EnquiryState = { status: "idle" };
-
 /**
- * The general enquiry form behind Contact: press, events, careers and large
- * parties. Same caveat as above — validated and logged, not yet delivered.
+ * The general enquiry form behind Contact: private dining, large parties,
+ * press and careers. Same caveat as above — validated and logged, not yet
+ * delivered anywhere.
  */
 export async function sendEnquiry(
   _previous: EnquiryState,
   formData: FormData
 ): Promise<EnquiryState> {
-  const name = String(formData.get("name") ?? "").trim();
-  const email = String(formData.get("email") ?? "").trim();
-  const subject = String(formData.get("subject") ?? "").trim();
-  const message = String(formData.get("message") ?? "").trim();
-
-  const errors: Record<string, string> = {};
-  if (name.length < 2) errors.name = "Please give us a name.";
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
-    errors.email = "We reply to this address.";
-  if (message.length < 10)
-    errors.message = "A sentence or two about what you need.";
+  const values = readEnquiry(formData);
+  const errors = validateEnquiry(values);
 
   if (Object.keys(errors).length > 0) {
     return { status: "invalid", errors };
   }
 
-  console.info("[enquiry]", { name, email, subject, message });
+  console.info("[enquiry]", values);
 
-  return { status: "sent", name };
+  return { status: "sent", name: values.name };
 }

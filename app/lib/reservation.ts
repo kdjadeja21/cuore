@@ -15,6 +15,15 @@ export type FieldName = (typeof FIELDS)[number];
 export type ReservationValues = Record<FieldName, string>;
 export type FieldErrors = Partial<Record<FieldName, string>>;
 
+export type ReservationState =
+  | { status: "idle" }
+  | { status: "invalid"; errors: FieldErrors; values: ReservationValues }
+  | { status: "confirmed"; reference: string; values: ReservationValues };
+
+/** Lives here rather than beside the action: a "use server" module may only
+ *  export async functions. */
+export const INITIAL_RESERVATION_STATE: ReservationState = { status: "idle" };
+
 export const OCCASIONS = [
   "Birthday",
   "Anniversary",
