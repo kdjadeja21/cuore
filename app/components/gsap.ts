@@ -2,10 +2,21 @@
 
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import { SplitText } from "gsap/SplitText";
 import { useGSAP } from "@gsap/react";
 
-gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
+gsap.registerPlugin(ScrollTrigger, ScrollToPlugin, SplitText, useGSAP);
+
+export function scrollToTop() {
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  gsap.to(window, {
+    scrollTo: { y: 0, autoKill: true },
+    duration: reduced ? 0 : 1.35,
+    ease: "power3.inOut",
+    overwrite: true,
+  });
+}
 
 // Mobile browser chrome collapsing/expanding fires resize storms;
 // ignoring them keeps pinned sections from jumping mid-scroll.
