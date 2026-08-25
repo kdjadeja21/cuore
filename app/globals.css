@@ -120,6 +120,27 @@ body {
   }
 }
 
+/* The arc gallery ships two variants and CSS picks one, so the fallback needs
+   no JavaScript to appear. Conditions here must match the GSAP matchMedia
+   query in ArcGallery, or the turning arc will be visible but never turn. */
+.arc-stage {
+  display: none;
+}
+
+.arc-grid {
+  display: grid;
+}
+
+@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+  .arc-stage {
+    display: block;
+  }
+
+  .arc-grid {
+    display: none;
+  }
+}
+
 /* Prevent FOUC on GSAP-managed elements: hidden until JS sets them up */
 .gsap-vis-hidden {
   visibility: hidden;
@@ -128,5 +149,153 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .gsap-vis-hidden {
     visibility: visible;
+  }
+}
+
+/* 3D scenes.
+   Perspective and clipping are kept on separate elements on purpose: an
+   element that both clips its overflow and preserves 3D is flattened by the
+   browser, which silently kills the depth. Clip on the outside, set
+   perspective on an inner wrapper, put .depth-layer on the moving children. */
+.scene {
+  perspective: 1000px;
+  perspective-origin: 50% 50%;
+}
+
+.scene-close {
+  perspective: 700px;
+  perspective-origin: 50% 50%;
+}
+
+.depth-layer {
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
+/* Focus — visible, and warm enough to belong to the palette */
+:focus-visible {
+  outline: 2px solid var(--color-terracotta);
+  outline-offset: 3px;
+}
+
+.on-dark :focus-visible,
+.on-dark:focus-visible {
+  outline-color: var(--color-glow);
+}
+
+/* Skip link: off-screen until focused, then pinned top-left */
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 100;
+  transform: translateY(-200%);
+  border-radius: 9999px;
+  background: var(--color-ink);
+  color: var(--color-cream);
+  padding: 0.75rem 1.5rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  transition: transform 0.2s ease;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+/* Text links: underline wipes in from the left */
+.link-wipe {
+  position: relative;
+  display: inline-block;
+}
+
+.link-wipe::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -0.15em;
+  height: 1px;
+  width: 100%;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.28s ease;
+}
+
+.link-wipe:hover::after,
+.link-wipe:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* Form fields — shared by the reservation and enquiry forms */
+.field {
+  width: 100%;
+  border: 1px solid color-mix(in srgb, var(--color-ink) 22%, transparent);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--color-cream) 70%, transparent);
+  padding: 0.8rem 1rem;
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--color-ink);
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.field:hover {
+  border-color: color-mix(in srgb, var(--color-ink) 40%, transparent);
+}
+
+.field[aria-invalid="true"] {
+  border-color: var(--color-wine);
+  background: color-mix(in srgb, var(--color-wine) 8%, var(--color-cream));
+}
+
+.field-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.65rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--color-ink-soft);
+}
+
+/* Belt-and-braces for reduced motion: GSAP timelines are gated in JS, this
+   catches CSS transitions and any keyframes that slip through. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* The menu page is meant to be printed or saved as a PDF */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  .grain::after {
+    display: none !important;
+  }
+
+  .print-plain {
+    padding: 0 !important;
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  .menu-item {
+    break-inside: avoid;
   }
 }

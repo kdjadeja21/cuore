@@ -2,7 +2,10 @@
 
 import { useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { gsap, useGSAP } from "./gsap";
+import { buttonClass } from "./button";
+import { SITE } from "@/app/lib/site";
 import banquet from "@/public/images/banquet.jpg";
 
 export default function Occasion() {
@@ -63,7 +66,7 @@ export default function Occasion() {
   );
 
   return (
-    <section ref={root} className="relative z-10 bg-ink text-cream">
+    <section ref={root} className="on-dark relative z-10 bg-ink text-cream">
       <div className="occasion-img-wrap relative h-[85vh] overflow-hidden will-change-[clip-path] sm:h-screen">
         <div className="occasion-img absolute -inset-y-[10%] inset-x-0 will-change-transform">
           <Image
@@ -79,7 +82,7 @@ export default function Occasion() {
 
         <div className="occasion-copy absolute inset-x-0 bottom-0 px-6 pb-14 sm:px-12 sm:pb-20">
           <p className="mb-6 text-[0.7rem] uppercase tracking-[0.4em] text-glow">
-            04 · l&apos;occasione — the occasion
+            05 · l&apos;occasione — the occasion
           </p>
           <h2 className="font-display text-[clamp(2.2rem,5vw,4.4rem)] font-medium leading-[1.05] tracking-tight">
             <span className="occasion-line block overflow-hidden pb-1">
@@ -93,12 +96,27 @@ export default function Occasion() {
             Weddings, corporate nights, live performances — the banquet wing
             turns up when you do, then dims back to dinner by eleven.
           </p>
-          <a
-            href="tel:+919099031031"
-            className="mt-8 inline-block rounded-full border border-cream/40 px-7 py-3 text-sm uppercase tracking-[0.2em] transition-colors hover:bg-cream hover:text-ink"
-          >
+          <dl className="mt-8 flex flex-wrap gap-x-12 gap-y-4 text-sm">
+            <div>
+              <dt className="text-[0.65rem] uppercase tracking-[0.3em] text-cream/50">
+                Banquet
+              </dt>
+              <dd className="mt-1 font-display text-xl">
+                up to {SITE.banquetCapacity} guests
+              </dd>
+            </div>
+            <div>
+              <dt className="text-[0.65rem] uppercase tracking-[0.3em] text-cream/50">
+                Dining room
+              </dt>
+              <dd className="mt-1 font-display text-xl">
+                {SITE.diningCovers} covers
+              </dd>
+            </div>
+          </dl>
+          <Link href="/contact" className={buttonClass("onDark", "mt-8 px-7 py-3")}>
             Plan an occasion
-          </a>
+          </Link>
         </div>
       </div>
     </section>

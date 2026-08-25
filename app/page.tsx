@@ -1,21 +1,23 @@
-import Nav from "./components/Nav";
 import Opening from "./components/Opening";
 import Heart from "./components/Heart";
 import Room from "./components/Room";
+import Dishes from "./components/Dishes";
 import Table from "./components/Table";
 import Occasion from "./components/Occasion";
-import Finale from "./components/Finale";
+import Voices from "./components/Voices";
+import Visit from "./components/Visit";
 
 export default function Home() {
   return (
-    <main id="top">
-      <Nav />
+    <>
       <Opening />
       <Heart />
       <Room />
+      <Dishes />
       <Table />
       <Occasion />
-      <Finale />
-    </main>
+      <Voices />
+      <Visit />
+    </>
   );
 }
