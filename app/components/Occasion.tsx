@@ -79,7 +79,7 @@ export default function Occasion() {
 
         <div className="occasion-copy absolute inset-x-0 bottom-0 px-6 pb-14 sm:px-12 sm:pb-20">
           <p className="mb-6 text-[0.7rem] uppercase tracking-[0.4em] text-glow">
-            04 · l&apos;occasione — the occasion
+            05 · l&apos;occasione — the occasion
           </p>
           <h2 className="font-display text-[clamp(2.2rem,5vw,4.4rem)] font-medium leading-[1.05] tracking-tight">
             <span className="occasion-line block overflow-hidden pb-1">
