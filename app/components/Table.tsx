@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import Image, { type StaticImageData } from "next/image";
-import { gsap, ScrollTrigger, useGSAP } from "./gsap";
+import { gsap, useGSAP } from "./gsap";
 import diningRoom from "@/public/images/dining-room.jpg";
 import diningView from "@/public/images/dining-view.jpg";
 import banquet from "@/public/images/banquet.jpg";
@@ -50,35 +50,63 @@ export default function Table() {
       const q = gsap.utils.selector(root);
       const mm = gsap.matchMedia();
 
-      // Touch / small screens: inline images wipe open once as they arrive
       mm.add(
-        "(max-width: 767px) and (prefers-reduced-motion: no-preference)",
-        () => {
-          q(".table-inline").forEach((fig) => {
-            gsap.fromTo(
-              fig,
-              { clipPath: "inset(0 100% 0 0)" },
-              {
-                clipPath: "inset(0 0% 0 0)",
-                duration: 1.1,
-                ease: "power3.inOut",
-                scrollTrigger: { trigger: fig, start: "top 78%", once: true },
-              }
-            );
-          });
-        }
-      );
+        {
+          motionOk: "(prefers-reduced-motion: no-preference)",
+          wide: "(min-width: 768px)",
+          canHover: "(hover: hover)",
+        },
+        (ctx) => {
+          const { motionOk, wide, canHover } = ctx.conditions as {
+            motionOk: boolean;
+            wide: boolean;
+            canHover: boolean;
+          };
+          if (!motionOk) return;
 
-      // Desktop with a real cursor: floating preview follows the mouse
-      mm.add(
-        "(min-width: 768px) and (hover: hover) and (prefers-reduced-motion: no-preference)",
-        () => {
-          const preview = q(".table-preview")[0];
-          const imgs = q(".table-preview-img");
-          const rows = q(".table-row");
+          // Heading reveal — masked line rise, once
+          gsap.from(q(".gallery-heading .line-inner"), {
+            yPercent: 120,
+            duration: 0.9,
+            stagger: 0.12,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: q(".gallery-heading")[0],
+              start: "top 80%",
+              once: true,
+            },
+          });
+
+          if (!(wide && canHover)) {
+            // Inline images wipe open once as they arrive
+            q(".gallery-inline").forEach((fig) => {
+              gsap.fromTo(
+                fig,
+                { clipPath: "inset(0 100% 0 0)" },
+                {
+                  clipPath: "inset(0 0% 0 0)",
+                  duration: 1.1,
+                  ease: "power3.inOut",
+                  scrollTrigger: { trigger: fig, start: "top 78%", once: true },
+                }
+              );
+            });
+            return;
+          }
+
+          // Real cursor available: floating preview follows the mouse
+          const preview = q(".gallery-preview")[0];
+          const imgs = q(".gallery-preview-img");
+          const rows = q(".gallery-row");
           if (!preview) return;
 
-          gsap.set(preview, { autoAlpha: 0, scale: 0.85, rotate: -4 });
+          gsap.set(preview, {
+            autoAlpha: 0,
+            scale: 0.85,
+            rotate: -4,
+            xPercent: -50,
+            yPercent: -55,
+          });
           gsap.set(imgs, { autoAlpha: 0 });
 
           const xTo = gsap.quickTo(preview, "x", { duration: 0.55, ease: "power3" });
@@ -118,7 +146,7 @@ export default function Table() {
                 duration: 0.35,
                 overwrite: "auto",
               });
-              gsap.to(row.querySelector(".table-row-title"), {
+              gsap.to(row.querySelector(".gallery-row-title"), {
                 x: j === i ? 20 : 0,
                 color: j === i ? "#b95c2d" : "#241c10",
                 duration: 0.45,
@@ -138,7 +166,7 @@ export default function Table() {
             });
             rows.forEach((row) => {
               gsap.to(row, { opacity: 1, duration: 0.35, overwrite: "auto" });
-              gsap.to(row.querySelector(".table-row-title"), {
+              gsap.to(row.querySelector(".gallery-row-title"), {
                 x: 0,
                 color: "#241c10",
                 duration: 0.45,
@@ -148,7 +176,7 @@ export default function Table() {
             });
           };
 
-          const list = q(".table-list")[0];
+          const list = q(".gallery-list")[0];
           const rowHandlers = rows.map((row, i) => {
             const fn = () => enterRow(i);
             row.addEventListener("mouseenter", fn);
@@ -166,18 +194,6 @@ export default function Table() {
           };
         }
       );
-
-      // Title reveal on arrival (wipe via mask, not a fade)
-      mm.add("(prefers-reduced-motion: no-preference)", () => {
-        gsap.from(q(".table-heading .line-inner"), {
-          yPercent: 120,
-          duration: 0.9,
-          stagger: 0.12,
-          ease: "power3.out",
-          scrollTrigger: { trigger: q(".table-heading")[0], start: "top 80%", once: true },
-        });
-        ScrollTrigger.refresh();
-      });
     },
     { scope: root }
   );
@@ -191,7 +207,7 @@ export default function Table() {
         03 · la tavola — the table
       </p>
 
-      <h2 className="table-heading mb-16 font-display text-[clamp(2.2rem,5vw,4.2rem)] font-medium leading-[1.05] tracking-tight sm:mb-20">
+      <h2 className="gallery-heading mb-16 font-display text-[clamp(2.2rem,5vw,4.2rem)] font-medium leading-[1.05] tracking-tight sm:mb-20">
         <span className="block overflow-hidden pb-1">
           <span className="line-inner block">Walk the room</span>
         </span>
@@ -202,15 +218,15 @@ export default function Table() {
         </span>
       </h2>
 
-      <ul className="table-list border-t border-ink/15">
+      <ul className="gallery-list border-t border-ink/15">
         {ROWS.map((row, i) => (
-          <li key={row.title} className="table-row border-b border-ink/15">
+          <li key={row.title} className="gallery-row border-b border-ink/15">
             <div className="flex items-baseline gap-6 py-8 sm:py-10">
               <span className="font-display text-sm text-rust">
                 0{i + 1}
               </span>
               <div className="flex-1">
-                <h3 className="table-row-title font-display text-[clamp(1.8rem,4.5vw,3.4rem)] font-medium leading-none tracking-tight will-change-transform">
+                <h3 className="gallery-row-title font-display text-[clamp(1.8rem,4.5vw,3.4rem)] font-medium leading-none tracking-tight will-change-transform">
                   {row.title}
                 </h3>
                 <p className="mt-2 text-sm uppercase tracking-[0.25em] text-ink-soft">
@@ -219,7 +235,7 @@ export default function Table() {
               </div>
             </div>
             {/* Inline image for touch screens */}
-            <figure className="table-inline mb-8 overflow-hidden rounded-xl md:hidden">
+            <figure className="gallery-inline mb-8 overflow-hidden rounded-xl">
               <div className="relative aspect-[4/3]">
                 <Image
                   src={row.image}
@@ -237,11 +253,11 @@ export default function Table() {
 
       {/* Floating preview — desktop only */}
       <div
-        className="table-preview pointer-events-none fixed left-0 top-0 z-30 hidden h-[19rem] w-[26rem] -translate-x-1/2 -translate-y-[55%] overflow-hidden rounded-2xl shadow-2xl shadow-ink/30 md:block"
+        className="gallery-preview pointer-events-none fixed left-0 top-0 z-30 h-[19rem] w-[26rem] overflow-hidden rounded-2xl shadow-2xl shadow-ink/30"
         aria-hidden="true"
       >
         {ROWS.map((row) => (
-          <div key={row.title} className="table-preview-img absolute inset-0">
+          <div key={row.title} className="gallery-preview-img absolute inset-0">
             <Image
               src={row.image}
               alt=""

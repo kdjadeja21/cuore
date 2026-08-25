@@ -102,6 +102,24 @@ body {
   opacity: 0.85;
 }
 
+/* Gallery imagery is keyed on hover capability, not just width:
+   cursor-following preview only where a real hover exists; inline
+   images everywhere else (touch, narrow, or hover-incapable setups). */
+.gallery-inline {
+  display: block;
+}
+.gallery-preview {
+  display: none;
+}
+@media (hover: hover) and (min-width: 768px) {
+  .gallery-inline {
+    display: none;
+  }
+  .gallery-preview {
+    display: block;
+  }
+}
+
 /* Prevent FOUC on GSAP-managed elements: hidden until JS sets them up */
 .gsap-vis-hidden {
   visibility: hidden;

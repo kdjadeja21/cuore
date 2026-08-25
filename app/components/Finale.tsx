@@ -50,7 +50,7 @@ export default function Finale() {
           delay: 2,
         });
 
-        // Each letter wiggles when touched — the sign is alive
+        // Each letter wiggles when hovered or tapped — the sign is alive
         const letters = q(".finale-word .letter");
         const handlers = letters.map((letter) => {
           const fn = () => {
@@ -70,13 +70,15 @@ export default function Finale() {
             });
           };
           letter.addEventListener("mouseenter", fn);
+          letter.addEventListener("pointerdown", fn);
           return fn;
         });
 
         return () => {
-          letters.forEach((letter, i) =>
-            letter.removeEventListener("mouseenter", handlers[i])
-          );
+          letters.forEach((letter, i) => {
+            letter.removeEventListener("mouseenter", handlers[i]);
+            letter.removeEventListener("pointerdown", handlers[i]);
+          });
         };
       });
     },
