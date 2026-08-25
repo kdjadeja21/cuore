@@ -42,13 +42,17 @@ export default function Nav() {
 
   useGSAP(
     () => {
-      const nav = root.current;
-      if (!nav) return;
+      // Every transform goes on the inner bar, never on <nav> itself. A
+      // transformed ancestor becomes the containing block for its fixed
+      // descendants, which would collapse the full-screen overlay below down
+      // to the height of the bar.
+      const bar = root.current?.querySelector<HTMLElement>(".nav-bar");
+      if (!bar) return;
 
-      gsap.set(nav, { y: -24, autoAlpha: 0 });
+      gsap.set(bar, { y: -24, autoAlpha: 0 });
 
       const reveal = () => {
-        gsap.to(nav, {
+        gsap.to(bar, {
           y: 0,
           autoAlpha: 1,
           duration: DUR.enter,
@@ -69,7 +73,7 @@ export default function Nav() {
       }
 
       const showAnim = gsap
-        .from(nav, { yPercent: -130, paused: true, duration: 0.35, ease: EASE.state })
+        .from(bar, { yPercent: -130, paused: true, duration: 0.35, ease: EASE.state })
         .progress(1);
 
       const trigger = ScrollTrigger.create({
@@ -78,7 +82,7 @@ export default function Nav() {
         onUpdate: (self) => {
           if (self.direction === -1 || open) showAnim.play();
           else showAnim.reverse();
-          nav.classList.toggle(
+          bar.classList.toggle(
             "nav-scrolled",
             self.scroll() > window.innerHeight * 0.8
           );
@@ -122,16 +126,12 @@ export default function Nav() {
   );
 
   return (
-    <nav
-      ref={root}
-      aria-label="Primary"
-      className={`no-print fixed inset-x-0 top-0 z-50 transition-colors duration-300 [&.nav-scrolled]:bg-parchment/85 [&.nav-scrolled]:text-ink [&.nav-scrolled]:backdrop-blur-md ${
-        overHero
-          ? "text-cream"
-          : "bg-parchment/85 text-ink backdrop-blur-md"
-      }`}
-    >
-      <div className="flex items-center justify-between px-6 py-4 sm:px-12">
+    <nav ref={root} aria-label="Primary" className="no-print fixed inset-x-0 top-0 z-50">
+      <div
+        className={`nav-bar relative z-10 flex items-center justify-between px-6 py-4 transition-colors duration-300 sm:px-12 [&.nav-scrolled]:bg-parchment/85 [&.nav-scrolled]:text-ink [&.nav-scrolled]:backdrop-blur-md ${
+          overHero ? "text-cream" : "bg-parchment/85 text-ink backdrop-blur-md"
+        }`}
+      >
         <Link
           href="/"
           className="font-display text-2xl font-semibold tracking-tight"
@@ -193,7 +193,7 @@ export default function Nav() {
         // Keeps the closed overlay's links out of the tab order
         inert={!open}
         aria-hidden={!open}
-        className="nav-overlay invisible fixed inset-0 z-40 flex flex-col justify-center gap-2 bg-ink px-8 text-cream opacity-0 md:hidden"
+        className="nav-overlay invisible fixed inset-0 z-0 flex flex-col justify-center gap-2 bg-ink px-8 text-cream opacity-0 md:hidden"
       >
         {NAV_LINKS.map((link) => (
           <span key={link.href} className="block overflow-hidden py-1">

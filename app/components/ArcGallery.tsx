@@ -71,32 +71,31 @@ export default function ArcGallery() {
         const items = q(".arc-item");
         if (!track || items.length === 0) return;
 
-        // Each frame is rotated about a point one radius behind itself, which
-        // lays the whole set out on a cylinder without any per-item maths.
+        // Every plane and the track itself pivot about the same axis, one
+        // radius behind the stage, which is what turns a stack of planes into
+        // a cylinder. The planes fill the stage and centre their frame with
+        // flexbox rather than a translate, because any centering translate
+        // would shift the pivot off that shared axis and swing the whole
+        // cylinder sideways out of the viewport as it turned.
+        const pivot = `50% 50% ${-RADIUS}px`;
+        gsap.set(track, { transformOrigin: pivot });
         items.forEach((item, i) => {
-          gsap.set(item, {
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            xPercent: -50,
-            yPercent: -50,
-            rotateY: i * STEP,
-            transformOrigin: `50% 50% ${-RADIUS}px`,
-          });
+          gsap.set(item, { rotateY: i * STEP, transformOrigin: pivot });
         });
 
         // Frames lose focus the further they are turned away from the viewer,
         // recomputed from the track's live rotation so it always agrees with
-        // what is actually on screen.
+        // what is actually on screen. Opacity and blur go on the frame rather
+        // than its full-stage plane, to keep the blur off a large surface.
         const focus = () => {
           const current = Number(gsap.getProperty(track, "rotateY"));
           items.forEach((item, i) => {
             const away = Math.min(Math.abs(i * STEP + current) / 72, 1);
-            gsap.set(item, {
+            gsap.set(item, { zIndex: 100 - Math.round(away * 100) });
+            gsap.set(item.querySelector(".arc-frame"), {
               opacity: 1 - away * 0.72,
               scale: 1 - away * 0.16,
               filter: `blur(${(away * 3).toFixed(1)}px)`,
-              zIndex: 100 - Math.round(away * 100),
             });
           });
         };
@@ -110,10 +109,13 @@ export default function ArcGallery() {
             rotateY: -(STEP * (items.length - 1)) - OVERSHOOT,
             ease: EASE.linear,
             onUpdate: focus,
+            // Driven off the stage rather than the whole section, so the sweep
+            // happens while the frames are actually on screen instead of
+            // spending its first frames below the fold.
             scrollTrigger: {
-              trigger: root.current,
-              start: "top bottom",
-              end: "bottom top",
+              trigger: q(".arc-stage")[0],
+              start: "top 85%",
+              end: "bottom 15%",
               scrub: 0.6,
             },
           }
@@ -148,29 +150,31 @@ export default function ArcGallery() {
         <div className="scene absolute inset-0">
           <div className="arc-track depth-layer absolute inset-0">
             {FRAMES.map((frame) => (
-              <figure
+              <div
                 key={frame.title}
-                className="arc-item w-[clamp(19rem,30vw,27rem)] will-change-transform"
+                className="arc-item absolute inset-0 flex items-center justify-center will-change-transform"
               >
-                <div className="relative aspect-[4/3] overflow-hidden rounded-lg shadow-2xl shadow-ink/60">
-                  <Image
-                    src={frame.image}
-                    alt={frame.alt}
-                    fill
-                    sizes="27rem"
-                    quality={72}
-                    className="object-cover"
-                  />
-                </div>
-                <figcaption className="mt-5 text-center">
-                  <span className="block font-display text-xl tracking-tight">
-                    {frame.title}
-                  </span>
-                  <span className="mt-1 block text-[0.65rem] uppercase tracking-[0.25em] text-cream/60">
-                    {frame.note}
-                  </span>
-                </figcaption>
-              </figure>
+                <figure className="arc-frame w-[clamp(19rem,30vw,27rem)]">
+                  <div className="relative aspect-[4/3] overflow-hidden rounded-lg shadow-2xl shadow-ink/60">
+                    <Image
+                      src={frame.image}
+                      alt={frame.alt}
+                      fill
+                      sizes="27rem"
+                      quality={72}
+                      className="object-cover"
+                    />
+                  </div>
+                  <figcaption className="mt-5 text-center">
+                    <span className="block font-display text-xl tracking-tight">
+                      {frame.title}
+                    </span>
+                    <span className="mt-1 block text-[0.65rem] uppercase tracking-[0.25em] text-cream/60">
+                      {frame.note}
+                    </span>
+                  </figcaption>
+                </figure>
+              </div>
             ))}
           </div>
         </div>
