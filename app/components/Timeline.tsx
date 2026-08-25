@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { gsap, useGSAP } from "./gsap";
 import { ALLOW_MOTION, DUR, EASE, RISE, WIDE } from "./motion";
+import MaskedLines from "./MaskedLines";
 
 type Entry = {
   year: string;
@@ -39,7 +40,7 @@ const ENTRIES: Entry[] = [
 ];
 
 export default function Timeline() {
-  const root = useRef<HTMLOListElement>(null);
+  const root = useRef<HTMLElement>(null);
 
   useGSAP(
     () => {
@@ -61,12 +62,14 @@ export default function Timeline() {
           });
         });
 
+        // Scrubbed against the list rather than the whole section, so the rule
+        // does not start drawing while only the heading is on screen.
         gsap.from(q(".timeline-rule"), {
           scaleY: 0,
           transformOrigin: "top center",
           ease: EASE.linear,
           scrollTrigger: {
-            trigger: root.current,
+            trigger: q(".timeline-list")[0],
             start: "top 70%",
             end: "bottom 80%",
             scrub: true,
@@ -90,44 +93,57 @@ export default function Timeline() {
   );
 
   return (
-    <ol
+    <section
       ref={root}
-      className="scene relative mx-auto max-w-4xl px-6 pb-28 sm:px-12 sm:pb-36"
+      aria-labelledby="timeline-heading"
+      className="mx-auto max-w-4xl px-6 pb-28 sm:px-12 sm:pb-36"
     >
-      <span
-        aria-hidden="true"
-        className="timeline-rule absolute bottom-32 left-6 top-2 w-px bg-ink/20 sm:left-1/2 sm:-translate-x-px"
-      />
+      <p className="mb-8 text-[0.7rem] uppercase tracking-[0.4em] text-rust">
+        la linea — the years
+      </p>
+      <h2
+        id="timeline-heading"
+        className="mb-20 font-display text-[clamp(1.9rem,4vw,3.2rem)] font-medium leading-[1.05] tracking-tight sm:mb-28"
+      >
+        <MaskedLines lines={["Nine years,", "in the right order."]} />
+      </h2>
 
-      {ENTRIES.map((entry, i) => (
-        <li
-          key={entry.year}
-          className={`timeline-entry relative mb-16 pl-12 will-change-transform sm:mb-24 sm:w-1/2 sm:pl-0 ${
-            i % 2 === 0
-              ? "sm:pr-14 sm:text-right"
-              : "sm:ml-auto sm:pl-14 sm:text-left"
-          }`}
-        >
-          <span
-            aria-hidden="true"
-            className={`absolute left-6 top-3 h-2 w-2 -translate-x-1/2 rounded-full bg-terracotta ${
+      <ol className="timeline-list scene relative">
+        <span
+          aria-hidden="true"
+          className="timeline-rule absolute bottom-32 left-6 top-2 w-px bg-ink/20 sm:left-1/2 sm:-translate-x-px"
+        />
+
+        {ENTRIES.map((entry, i) => (
+          <li
+            key={entry.year}
+            className={`timeline-entry relative mb-16 pl-12 will-change-transform sm:mb-24 sm:w-1/2 sm:pl-0 ${
               i % 2 === 0
-                ? "sm:left-auto sm:right-0 sm:translate-x-1/2"
-                : "sm:left-0 sm:-translate-x-1/2"
+                ? "sm:pr-14 sm:text-right"
+                : "sm:ml-auto sm:pl-14 sm:text-left"
             }`}
-          />
+          >
+            <span
+              aria-hidden="true"
+              className={`absolute left-6 top-3 h-2 w-2 -translate-x-1/2 rounded-full bg-terracotta ${
+                i % 2 === 0
+                  ? "sm:left-auto sm:right-0 sm:translate-x-1/2"
+                  : "sm:left-0 sm:-translate-x-1/2"
+              }`}
+            />
 
-          <p className="font-display text-3xl font-semibold leading-none tracking-tight text-terracotta sm:text-4xl">
-            {entry.year}
-          </p>
-          <h3 className="mt-3 font-display text-xl font-medium tracking-tight sm:text-2xl">
-            {entry.title}
-          </h3>
-          <p className="mt-3 text-sm leading-relaxed text-ink-soft">
-            {entry.body}
-          </p>
-        </li>
-      ))}
-    </ol>
+            <p className="font-display text-3xl font-semibold leading-none tracking-tight text-terracotta sm:text-4xl">
+              {entry.year}
+            </p>
+            <h3 className="mt-3 font-display text-xl font-medium tracking-tight sm:text-2xl">
+              {entry.title}
+            </h3>
+            <p className="mt-3 text-sm leading-relaxed text-ink-soft">
+              {entry.body}
+            </p>
+          </li>
+        ))}
+      </ol>
+    </section>
   );
 }
