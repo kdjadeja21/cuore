@@ -110,6 +110,10 @@ body {
 }
 .gallery-preview {
   display: none;
+  /* Hidden until GSAP takes over — otherwise the first photo
+     flashes at the viewport origin on load / hard refresh. */
+  opacity: 0;
+  visibility: hidden;
 }
 @media (hover: hover) and (min-width: 768px) {
   .gallery-inline {

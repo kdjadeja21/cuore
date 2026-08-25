@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { gsap, useGSAP } from "./gsap";
+import { gsap, useGSAP, scrollToTop } from "./gsap";
 import CuoreWord from "./CuoreWord";
 
 const MARQUEE = "dal cuore · from the heart · ";
@@ -157,8 +157,18 @@ export default function Finale() {
         </a>
       </div>
 
-      <div className="border-t border-cream/10 px-6 py-6 text-center text-xs text-cream/40">
-        © {new Date().getFullYear()} cuore by masala diaries · rajkot
+      <div className="flex flex-col items-center justify-between gap-4 border-t border-cream/10 px-6 py-6 text-center text-xs text-cream/40 sm:flex-row sm:text-left">
+        <p>© {new Date().getFullYear()} cuore by masala diaries · rajkot</p>
+        <a
+          href="#top"
+          onClick={(e) => {
+            e.preventDefault();
+            scrollToTop();
+          }}
+          className="text-[0.65rem] uppercase tracking-[0.35em] text-glow transition-colors hover:text-cream"
+        >
+          Back to top
+        </a>
       </div>
     </footer>
   );
