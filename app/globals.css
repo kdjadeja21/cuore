@@ -1,26 +1,132 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-sand: #e2cb96;
+  --color-sand-deep: #d3b678;
+  --color-cream: #f4ead2;
+  --color-parchment: #efe2bd;
+  --color-ink: #241c10;
+  --color-ink-soft: #4a3b26;
+  --color-terracotta: #b95c2d;
+  --color-rust: #96431f;
+  --color-wine: #6f2f24;
+  --color-glow: #ffc97e;
+  --font-display: var(--font-fraunces);
+  --font-sans: var(--font-instrument);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background: var(--color-parchment);
+  color: var(--color-ink);
+  scroll-behavior: auto;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-terracotta);
+  color: var(--color-cream);
+}
+
+/* Display type */
+.font-display {
+  font-family: var(--font-display), serif;
+}
+
+/* Clipping window for wordmark rise animations; padding keeps tilted
+   glyph edges from being shaved off at rest. */
+.cuore-mask {
+  display: inline-block;
+  overflow: hidden;
+  padding: 0.16em 0.1em;
+  margin: -0.16em -0.1em;
+}
+
+/* The crafted wordmark — letters carry their own tilt like the physical sign */
+.cuore-word {
+  display: inline-flex;
+  align-items: baseline;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  font-family: var(--font-display), serif;
+  font-weight: 640;
+  font-variation-settings: "SOFT" 100, "WONK" 1, "opsz" 144;
+}
+
+.cuore-word .letter {
+  display: inline-block;
+  transform-origin: 50% 80%;
+  will-change: transform;
+}
+
+.cuore-word .letter:nth-child(1) { rotate: -7deg; translate: 0 0.02em; }
+.cuore-word .letter:nth-child(2) { rotate: 4deg; translate: 0.01em -0.055em; }
+.cuore-word .letter:nth-child(3) { rotate: -3deg; translate: 0 0.065em; }
+.cuore-word .letter:nth-child(4) { rotate: 6deg; translate: 0.015em -0.04em; }
+.cuore-word .letter:nth-child(5) { rotate: -5deg; translate: 0.01em 0.05em; }
+
+/* Neon treatment for the finale wordmark */
+.cuore-neon .letter {
+  color: var(--color-cream);
+  text-shadow:
+    0 0 12px rgba(255, 201, 126, 0.55),
+    0 0 42px rgba(255, 176, 92, 0.4),
+    0 0 90px rgba(230, 126, 34, 0.28);
+}
+
+/* Film grain — static, zero animation cost */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: -50%;
+  z-index: 80;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  opacity: 0.05;
+}
+
+/* Mud-cloth inspired divider strip */
+.tribal-strip {
+  height: 10px;
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--color-ink) 0 14px,
+    transparent 14px 22px,
+    var(--color-ink) 22px 26px,
+    transparent 26px 40px
+  );
+  opacity: 0.85;
+}
+
+/* Gallery imagery is keyed on hover capability, not just width:
+   cursor-following preview only where a real hover exists; inline
+   images everywhere else (touch, narrow, or hover-incapable setups). */
+.gallery-inline {
+  display: block;
+}
+.gallery-preview {
+  display: none;
+}
+@media (hover: hover) and (min-width: 768px) {
+  .gallery-inline {
+    display: none;
+  }
+  .gallery-preview {
+    display: block;
+  }
+}
+
+/* Prevent FOUC on GSAP-managed elements: hidden until JS sets them up */
+.gsap-vis-hidden {
+  visibility: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gsap-vis-hidden {
+    visibility: visible;
+  }
 }
