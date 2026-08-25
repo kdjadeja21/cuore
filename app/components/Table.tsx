@@ -253,7 +253,7 @@ export default function Table() {
 
       {/* Floating preview — desktop only */}
       <div
-        className="gallery-preview pointer-events-none fixed left-0 top-0 z-30 h-[19rem] w-[26rem] overflow-hidden rounded-2xl shadow-2xl shadow-ink/30"
+        className="gallery-preview pointer-events-none invisible fixed left-0 top-0 z-30 h-[19rem] w-[26rem] overflow-hidden rounded-2xl opacity-0 shadow-2xl shadow-ink/30"
         aria-hidden="true"
       >
         {ROWS.map((row) => (

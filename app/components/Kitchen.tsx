@@ -173,11 +173,11 @@ export default function Kitchen() {
   return (
     <section
       ref={root}
-      className="relative z-10 overflow-hidden bg-terracotta text-cream"
+      className="relative z-10 overflow-x-clip bg-terracotta text-cream md:h-svh md:overflow-hidden"
     >
-      <div className="flex min-h-screen flex-col justify-center gap-10 py-16 sm:gap-14">
-        <div className="px-6 sm:px-12">
-          <p className="mb-6 text-[0.7rem] uppercase tracking-[0.4em] text-glow">
+      <div className="flex min-h-screen flex-col justify-center gap-8 py-16 sm:gap-10 md:h-full md:min-h-0 md:gap-6 md:py-10 lg:gap-8 lg:py-12">
+        <div className="shrink-0 px-6 sm:px-12">
+          <p className="mb-4 text-[0.7rem] uppercase tracking-[0.4em] text-glow md:mb-5">
             03 · la cucina — the kitchen
           </p>
           <h2 className="kitchen-heading font-display text-[clamp(2.2rem,5vw,4.2rem)] font-medium leading-[1.05] tracking-tight">
@@ -190,24 +190,24 @@ export default function Kitchen() {
           </h2>
         </div>
 
-        <div className="kitchen-wrap overflow-x-auto overscroll-x-contain px-6 [scrollbar-width:none] [scroll-snap-type:x_mandatory] sm:px-12 [&::-webkit-scrollbar]:hidden">
-          <ul className="kitchen-track flex w-max items-end gap-6 pr-6 will-change-transform sm:gap-10 sm:pr-12">
+        <div className="kitchen-wrap min-h-0 flex-1 overflow-x-auto overscroll-x-contain px-6 [scrollbar-width:none] [scroll-snap-type:x_mandatory] sm:px-12 md:flex md:flex-col [&::-webkit-scrollbar]:hidden">
+          <ul className="kitchen-track flex w-max items-end gap-6 pr-6 will-change-transform sm:gap-10 sm:pr-12 md:h-full md:items-stretch">
             {DISHES.map((dish, i) => (
               <li
                 key={dish.title}
-                className="shrink-0 [scroll-snap-align:start]"
+                className="h-full shrink-0 [scroll-snap-align:start]"
               >
                 <figure
                   className={
                     dish.wide
-                      ? "w-[78vw] max-w-[34rem] sm:w-[44vw]"
-                      : "w-[68vw] max-w-[24rem] sm:w-[30vw]"
+                      ? "flex h-full w-[78vw] max-w-[34rem] flex-col sm:w-[44vw]"
+                      : "flex h-full w-[68vw] max-w-[24rem] flex-col sm:w-[30vw]"
                   }
                 >
                   <div
-                    className={`relative overflow-hidden rounded-2xl ${
+                    className={`relative min-h-0 overflow-hidden rounded-2xl ${
                       dish.wide ? "aspect-[4/3]" : "aspect-[3/4]"
-                    }`}
+                    } md:aspect-auto md:flex-1`}
                   >
                     <Image
                       src={dish.image}
@@ -218,7 +218,7 @@ export default function Kitchen() {
                       className="kitchen-card-img scale-[1.14] object-cover will-change-transform"
                     />
                   </div>
-                  <figcaption className="mt-4 flex items-baseline gap-3">
+                  <figcaption className="mt-4 flex shrink-0 items-baseline gap-3">
                     <span className="font-display text-sm text-glow">
                       0{i + 1}
                     </span>
@@ -237,7 +237,7 @@ export default function Kitchen() {
           </ul>
         </div>
 
-        <div className="px-6 sm:px-12">
+        <div className="shrink-0 px-6 sm:px-12">
           <div className="h-px w-full bg-cream/25">
             <div className="kitchen-progress h-px w-full origin-left scale-x-0 bg-cream" />
           </div>
