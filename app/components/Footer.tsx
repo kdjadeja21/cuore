@@ -1,12 +1,14 @@
 "use client";
 
 import { useRef } from "react";
+import Link from "next/link";
 import { gsap, useGSAP } from "./gsap";
+import { ALLOW_MOTION, DUR, EASE, REVEAL_START, STAGGER } from "./motion";
+import { buttonClass } from "./button";
 import CuoreWord from "./CuoreWord";
+import { SITE } from "@/app/lib/site";
 
-const MARQUEE = "dal cuore · from the heart · ";
-
-export default function Finale() {
+export default function Footer() {
   const root = useRef<HTMLElement>(null);
 
   useGSAP(
@@ -14,24 +16,24 @@ export default function Finale() {
       const q = gsap.utils.selector(root);
       const mm = gsap.matchMedia();
 
-      mm.add("(prefers-reduced-motion: no-preference)", () => {
+      mm.add(ALLOW_MOTION, () => {
         // Endless marquee — one transform, cheap forever
         gsap.to(q(".marquee-track"), {
           xPercent: -50,
           duration: 26,
-          ease: "none",
+          ease: EASE.linear,
           repeat: -1,
         });
 
-        // The sign flickers on as the finale scrolls into view
+        // The sign flickers on as the footer scrolls into view
         gsap.from(q(".finale-word .letter"), {
           yPercent: 140,
-          duration: 0.9,
-          stagger: 0.08,
-          ease: "back.out(1.4)",
+          duration: DUR.statement,
+          stagger: STAGGER.normal,
+          ease: EASE.land,
           scrollTrigger: {
             trigger: q(".finale-word")[0],
-            start: "top 80%",
+            start: REVEAL_START,
             once: true,
           },
         });
@@ -42,7 +44,7 @@ export default function Finale() {
             { scale: 1.16, duration: 0.14, ease: "power2.out" },
             { scale: 1, duration: 0.12, ease: "power2.in" },
             { scale: 1.1, duration: 0.12, ease: "power2.out" },
-            { scale: 1, duration: 0.16, ease: "power2.inOut" },
+            { scale: 1, duration: 0.16, ease: EASE.state },
           ],
           transformOrigin: "50% 50%",
           repeat: -1,
@@ -63,8 +65,8 @@ export default function Finale() {
                 gsap.to(letter, {
                   rotate: 0,
                   yPercent: 0,
-                  duration: 0.9,
-                  ease: "elastic.out(1, 0.35)",
+                  duration: DUR.statement,
+                  ease: EASE.recover,
                 });
               },
             });
@@ -86,14 +88,19 @@ export default function Finale() {
   );
 
   return (
-    <footer ref={root} className="relative z-10 overflow-hidden bg-ink text-cream">
+    <footer
+      ref={root}
+      className="no-print on-dark relative z-10 overflow-hidden bg-ink text-cream"
+    >
       <div className="tribal-strip opacity-40" />
 
-      {/* Marquee */}
       <div className="overflow-hidden border-b border-cream/10 py-5">
-        <div className="marquee-track flex w-max whitespace-nowrap font-display text-lg text-cream/60 will-change-transform">
-          <span>{MARQUEE.repeat(6)}</span>
-          <span>{MARQUEE.repeat(6)}</span>
+        <div
+          className="marquee-track flex w-max whitespace-nowrap font-display text-lg text-cream/60 will-change-transform"
+          aria-hidden="true"
+        >
+          <span>{SITE.marquee.repeat(6)}</span>
+          <span>{SITE.marquee.repeat(6)}</span>
         </div>
       </div>
 
@@ -107,7 +114,7 @@ export default function Finale() {
         </div>
 
         <p className="mt-8 text-xs uppercase tracking-[0.45em] text-cream/70 sm:text-sm">
-          by masala diaries
+          {SITE.parent}
         </p>
 
         <div className="mt-16 grid w-full max-w-3xl grid-cols-1 gap-10 text-sm sm:grid-cols-3">
@@ -116,14 +123,14 @@ export default function Finale() {
               Where
             </p>
             <a
-              href="https://share.google/XkVfOSEDBZnbFkhmu"
+              href={SITE.directionsUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="leading-relaxed text-cream/90 underline-offset-4 hover:underline"
+              className="link-wipe leading-relaxed text-cream/90"
             >
-              Near 150 Ft Ring Road,
+              {SITE.address.street},
               <br />
-              Rajkot, Gujarat
+              {SITE.address.locality}, {SITE.address.region}
             </a>
           </div>
           <div>
@@ -131,9 +138,9 @@ export default function Finale() {
               When
             </p>
             <p className="leading-relaxed text-cream/90">
-              Open daily
+              {SITE.hours.label}
               <br />
-              11 am – 11 pm
+              {SITE.hours.display}
             </p>
           </div>
           <div>
@@ -141,24 +148,50 @@ export default function Finale() {
               Reserve
             </p>
             <a
-              href="tel:+919099031031"
-              className="leading-relaxed text-cream/90 underline-offset-4 hover:underline"
+              href={SITE.phone.href}
+              className="link-wipe leading-relaxed text-cream/90"
             >
-              +91 90990 31031
+              {SITE.phone.display}
             </a>
           </div>
         </div>
 
-        <a
-          href="tel:+919099031031"
-          className="mt-16 rounded-full bg-terracotta px-10 py-4 text-sm font-medium uppercase tracking-[0.2em] text-cream transition-transform hover:scale-[1.04] active:scale-95"
-        >
+        <Link href="/reservations" className={buttonClass("primary", "mt-16")}>
           Reserve a table
-        </a>
+        </Link>
+
+        <ul className="mt-14 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-xs uppercase tracking-[0.25em] text-cream/60">
+          <li>
+            <Link href="/menu" className="link-wipe">
+              Menu
+            </Link>
+          </li>
+          <li>
+            <Link href="/about" className="link-wipe">
+              About
+            </Link>
+          </li>
+          <li>
+            <Link href="/contact" className="link-wipe">
+              Contact
+            </Link>
+          </li>
+          <li>
+            <a
+              href={SITE.instagramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="link-wipe"
+            >
+              Instagram
+            </a>
+          </li>
+        </ul>
       </div>
 
       <div className="border-t border-cream/10 px-6 py-6 text-center text-xs text-cream/40">
-        © {new Date().getFullYear()} cuore by masala diaries · rajkot
+        © {new Date().getFullYear()} {SITE.name} {SITE.parent} ·{" "}
+        {SITE.address.locality.toLowerCase()}
       </div>
     </footer>
   );

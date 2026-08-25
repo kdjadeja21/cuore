@@ -204,7 +204,7 @@ export default function Table() {
       className="relative z-10 bg-parchment px-6 py-28 text-ink sm:px-12 sm:py-36"
     >
       <p className="mb-8 text-[0.7rem] uppercase tracking-[0.4em] text-rust">
-        03 · la tavola — the table
+        04 · la tavola — the table
       </p>
 
       <h2 className="gallery-heading mb-16 font-display text-[clamp(2.2rem,5vw,4.2rem)] font-medium leading-[1.05] tracking-tight sm:mb-20">
